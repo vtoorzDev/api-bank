@@ -1,5 +1,6 @@
 package com.api_banco.service.account;
 
+import com.api_banco.controller.account.AccountController;
 import com.api_banco.dto.requestDTO.account.AccountRequestDTO;
 import com.api_banco.dto.responseDTO.account.AccountResponseDTO;
 import com.api_banco.entity.account.AccountEntity;
@@ -9,6 +10,9 @@ import com.api_banco.repository.account.AccountRepository;
 import com.api_banco.repository.client.ClientRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -55,5 +59,56 @@ public class AccountService {
         accountRepository.save(accountcreated);
 
         return transformResponse(accountcreated);
+    }
+    public List<AccountResponseDTO> findAllAccounts(){
+        List<AccountEntity> accounts = accountRepository.findAll();
+        List<AccountResponseDTO> accountsResponse = new ArrayList<>();
+
+        if (accounts.isEmpty()){
+            throw new AccountException("Nenhuma conta cadastrada no sistema");
+        }
+
+        for (AccountEntity account : accounts) {
+            accountsResponse.add(transformResponse(account));
+        }
+        return accountsResponse;
+        }
+    public AccountResponseDTO findByIdAccount(Long id) {
+        Optional<AccountEntity> accountFound = accountRepository.findByAccountId(id);
+
+        if (accountFound.isEmpty()) {
+            throw new AccountException("Conta não encontrada");
+        }
+        return transformResponse(accountFound.get());
+    }
+
+    public AccountResponseDTO updateAccount(AccountRequestDTO accountRequestDTO, Long id) {
+        Optional<AccountEntity> accoutFound = accountRepository.findById(id);
+
+        if (accoutFound.isEmpty()) {
+            throw new AccountException("Conta não encontrada no sistema");
+        }
+
+        AccountEntity accountUpdate = accoutFound.get();
+
+        accountUpdate.setAccountNumber(accountRequestDTO.getAccountNumber());
+        accountUpdate.setAgency(accountRequestDTO.getAgency());
+        accountUpdate.setCurrentBalance(accountRequestDTO.getCurrentBalance());
+
+        accountRepository.save(accountUpdate);
+
+        return transformResponse(accountUpdate);
+    }
+
+    public void deleteAccount(Long id) {
+        Optional<AccountEntity> accountFoud = accountRepository.findById(id);
+
+        if (accountFoud.isEmpty()) {
+            throw new AccountException("Conta não encontrada");
+        }
+
+        AccountEntity accountDelete = accountFoud.get();
+        accountRepository.delete(accountDelete);
+
     }
 }
