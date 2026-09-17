@@ -10,5 +10,5 @@ import java.util.Optional;
 public interface ClientRepository extends JpaRepository<ClientEntity, Long> {
     boolean existsByCpf(String cpf);
     Optional<ClientEntity> findByCpf(String cpf);
-    void delete(String cpf);
+    void deleteByCpf(String cpf);
 }

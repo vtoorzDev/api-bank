@@ -81,7 +81,7 @@ public class ClientService {
 
     public void deleteClient(String cpf){
         if (clientRepository.existsByCpf(cpf)){
-            clientRepository.delete(cpf);
+            clientRepository.deleteByCpf(cpf);
         }
     }
 }
