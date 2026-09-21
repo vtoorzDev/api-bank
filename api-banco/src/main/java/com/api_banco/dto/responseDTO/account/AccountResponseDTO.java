@@ -13,5 +13,6 @@ public class AccountResponseDTO {
     private String agency;
     private BigDecimal currentBalance;
     private boolean statusAccount;
-    private Long clientId;
+    private String clientCpf;
+    private String clientName;
 }

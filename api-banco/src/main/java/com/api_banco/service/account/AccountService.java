@@ -1,6 +1,5 @@
 package com.api_banco.service.account;
 
-import com.api_banco.controller.account.AccountController;
 import com.api_banco.dto.requestDTO.account.AccountRequestDTO;
 import com.api_banco.dto.responseDTO.account.AccountResponseDTO;
 import com.api_banco.entity.account.AccountEntity;
@@ -11,7 +10,6 @@ import com.api_banco.repository.client.ClientRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -31,8 +29,10 @@ public class AccountService {
         accountResponseDTO.setId(accountEntity.getId());
         accountResponseDTO.setAccountNumber(accountEntity.getAccountNumber());
         accountResponseDTO.setAgency(accountEntity.getAgency());
-        accountResponseDTO.setStatusAccount(accountEntity.isStatusAccount());
         accountResponseDTO.setCurrentBalance(accountEntity.getCurrentBalance());
+        accountResponseDTO.setStatusAccount(accountEntity.isStatusAccount());
+        accountResponseDTO.setClientCpf(accountEntity.getClient().getCpf());
+        accountResponseDTO.setClientName(accountEntity.getClient().getName());
 
         return accountResponseDTO;
     }
@@ -49,10 +49,11 @@ public class AccountService {
         }
 
         AccountEntity accountcreated = new AccountEntity();
+        ClientEntity client = clientFound.get();
 
         accountcreated.setAccountNumber(accountRequestDTO.getAccountNumber());
         accountcreated.setAgency(accountRequestDTO.getAgency());
-        accountcreated.setCurrentBalance(accountRequestDTO.getCurrentBalance());
+        accountcreated.setCurrentBalance(client.getWage());
         accountcreated.setStatusAccount(true);
         accountcreated.setClient(clientFound.get());
 
@@ -74,7 +75,7 @@ public class AccountService {
         return accountsResponse;
         }
     public AccountResponseDTO findByIdAccount(Long id) {
-        Optional<AccountEntity> accountFound = accountRepository.findByAccountId(id);
+        Optional<AccountEntity> accountFound = accountRepository.findById(id);
 
         if (accountFound.isEmpty()) {
             throw new AccountException("Conta não encontrada");
@@ -93,7 +94,7 @@ public class AccountService {
 
         accountUpdate.setAccountNumber(accountRequestDTO.getAccountNumber());
         accountUpdate.setAgency(accountRequestDTO.getAgency());
-        accountUpdate.setCurrentBalance(accountRequestDTO.getCurrentBalance());
+
 
         accountRepository.save(accountUpdate);
 

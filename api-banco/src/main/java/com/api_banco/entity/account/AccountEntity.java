@@ -23,6 +23,6 @@ public class AccountEntity {
     private boolean statusAccount;
 
     @OneToOne
-    @JoinColumn(name = "cliente_id", nullable = false)
+    @JoinColumn(name = "client_id", nullable = false)
     private ClientEntity client;
 }
